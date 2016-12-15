@@ -1,0 +1,8 @@
+H = Honeycomb()
+H.setEdgeSize(1)
+H.setGapSize(0.05)
+H.setNumberColumns(7)
+H.setNumberRows(6)
+H.generateHexs()
+H.generateCohesives()
+H.generateAssembly()
