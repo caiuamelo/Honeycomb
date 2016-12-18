@@ -3,6 +3,20 @@
 # Data de criacao: 2/12/2016
 # Data de modificacao: 12/12/2016
  
+# Para executar no abaqus?
+## Carrega a classe
+# H = Honeycomb()
+## Seta o tamanho da aresta do hexagono
+# H.setEdgeSize(1)
+## Tamanho do gap
+# H.setGapSize(0.05)
+## Numero de colunas  
+# H.setNumberColumns(7)
+## Numero de linhas
+# H.setNumberRows(6)
+# H.generateHexs()
+# H.generateCohesives()
+# H.generateAssembly()
 
 # -*- coding: mbcs -*-
 from material import *
