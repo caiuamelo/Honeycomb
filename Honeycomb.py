@@ -519,29 +519,30 @@ class Honeycomb:
                 , thickness=ON, tieRotations=ON)
         # Interacoes do lado direito
         for j in range(2,4*(self.nr),4):
+            index=j+((self.nc+1)%2)*2
             mdb.models['Model-1'].Tie(adjust=ON, master=Region(
-                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(j)+'-'+str(2*self.nc)].edges[1:2])
-                , name='Hex-'+str(j)+'-'+str(2*self.nc)+'-Coe-'+str(j-2)+'-'+str(2*self.nc),
+                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(index)+'-'+str(2*self.nc)].edges[1:2])
+                , name='Hex-'+str(index)+'-'+str(2*self.nc)+'-Coe-'+str(index-2)+'-'+str(2*self.nc),
                 positionToleranceMethod=COMPUTED, slave=Region(
-                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-Cohesive-000-'+str(j-2)+'-'+str(2*self.nc)].edges[2:3])
+                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-Cohesive-000-'+str(index-2)+'-'+str(2*self.nc)].edges[2:3])
                 , thickness=ON, tieRotations=ON)
             mdb.models['Model-1'].Tie(adjust=ON, master=Region(
-                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(j)+'-'+str(2*self.nc)].edges[0:1])
-                , name='Hex-'+str(j)+'-'+str(2*self.nc)+'-Coe-'+str(j-1)+'-'+str(2*self.nc-1), 
+                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(index)+'-'+str(2*self.nc)].edges[0:1])
+                , name='Hex-'+str(index)+'-'+str(2*self.nc)+'-Coe-'+str(index-1)+'-'+str(2*self.nc-1), 
                 positionToleranceMethod=COMPUTED, slave=Region(
-                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-Cohesive-120-'+str(j-1)+'-'+str(2*self.nc-1)].edges[3:4])
+                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-Cohesive-120-'+str(index-1)+'-'+str(2*self.nc-1)].edges[3:4])
                 , thickness=ON, tieRotations=ON)
             mdb.models['Model-1'].Tie(adjust=ON, master=Region(
-                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(j)+'-'+str(2*self.nc)].edges[4:5])
-                , name='Hex-'+str(j)+'-'+str(2*self.nc)+'-Coe-'+str(j+1)+'-'+str(2*self.nc-1), 
+                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(index)+'-'+str(2*self.nc)].edges[4:5])
+                , name='Hex-'+str(index)+'-'+str(2*self.nc)+'-Coe-'+str(index+1)+'-'+str(2*self.nc-1), 
                 positionToleranceMethod=COMPUTED, slave=Region(
-                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-Cohesive-060-'+str(j+1)+'-'+str(2*self.nc-1)].edges[1:2])
+                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-Cohesive-060-'+str(index+1)+'-'+str(2*self.nc-1)].edges[1:2])
                 , thickness=ON, tieRotations=ON)
             mdb.models['Model-1'].Tie(adjust=ON, master=Region(
-                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(j)+'-'+str(2*self.nc)].edges[3:4])
-                , name='Hex-'+str(j)+'-'+str(2*self.nc)+'-Coe-'+str(j+2)+'-'+str(2*self.nc), 
+                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(index)+'-'+str(2*self.nc)].edges[3:4])
+                , name='Hex-'+str(index)+'-'+str(2*self.nc)+'-Coe-'+str(index+2)+'-'+str(2*self.nc), 
                 positionToleranceMethod=COMPUTED, slave=Region(
-                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-Cohesive-000-'+str(j+2)+'-'+str(2*self.nc)].edges[0:1])
+                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-Cohesive-000-'+str(index+2)+'-'+str(2*self.nc)].edges[0:1])
                 , thickness=ON, tieRotations=ON)
         # Interacoes do lado esquerdo
         for j in range(4,4*(self.nr+1),4):
@@ -595,4 +596,22 @@ class Honeycomb:
                 side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-Cohesive-120-'+str(4*self.nr+1)+'-'+str(2*self.nc-1)].edges[3:4])
                 , thickness=ON, tieRotations=ON)
         else:
-            pass
+            mdb.models['Model-1'].Tie(adjust=ON, master=Region(
+                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(0)+'-'+str(2*self.nc)].edges[0:1]) #Acertar arestas
+                , name='Hex-'+str(0)+'-'+str(2*self.nc)+'-Coe-'+str(1)+'-'+str(2*self.nc-1), 
+                positionToleranceMethod=COMPUTED, slave=Region(
+                    side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-Cohesive-000-'+str(2)+'-'+str(2*self.nc)].edges[1:2])
+                , thickness=ON, tieRotations=ON)
+            mdb.models['Model-1'].Tie(adjust=ON, master=Region(
+                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(0)+'-'+str(2*self.nc)].edges[3:4])
+                , name='Hex-'+str(0)+'-'+str(2*self.nc-1)+'-Coe-'+str(2)+'-'+str(2*self.nc), 
+                positionToleranceMethod=COMPUTED, slave=Region(
+                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-Cohesive-060-'+str(1)+'-'+str(2*self.nc-1)].edges[0:1])
+                , thickness=ON, tieRotations=ON)
+
+    def setHexsProperty(self):
+        pass
+    def setCohesveProperty(self):
+        pass
+
+
