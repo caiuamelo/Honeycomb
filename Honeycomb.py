@@ -74,6 +74,28 @@ class Honeycomb:
                 mdb.models['Model-1'].parts['Hex-'+str(j+((k-1)%2)*2)+'-'+str(i)].BaseShell(sketch=
                     mdb.models['Model-1'].sketches['__profile__'])
                 del mdb.models['Model-1'].sketches['__profile__']
+                # Cria as particoes para melhorar a malha
+                mdb.models['Model-1'].ConstrainedSketch(gridSpacing=0.13, name='__profile__',
+                    sheetSize=5.29, transform=
+                    mdb.models['Model-1'].parts['Hex-'+str(j+((k-1)%2)*2)+'-'+str(i)].MakeSketchTransform(
+                    sketchPlane=mdb.models['Model-1'].parts['Hex-'+str(j+((k-1)%2)*2)+'-'+str(i)].faces[0],
+                    sketchPlaneSide=SIDE1, sketchOrientation=RIGHT, origin=(0.5*self.edge, 0.5*sqrt(3)*self.edge,
+                    0.0)))
+                mdb.models['Model-1'].parts['Hex-'+str(j+((k-1)%2)*2)+'-'+str(i)].projectReferencesOntoSketch(filter=
+                    COPLANAR_EDGES, sketch=mdb.models['Model-1'].sketches['__profile__'])
+                mdb.models['Model-1'].sketches['__profile__'].Line(point1=(-1.0,
+                    4.03784438551824e-07), point2=(1.0, 4.03784438551824e-07))
+                mdb.models['Model-1'].sketches['__profile__'].HorizontalConstraint(
+                    addUndoState=False, entity=
+                    mdb.models['Model-1'].sketches['__profile__'].geometry[8])
+                mdb.models['Model-1'].sketches['__profile__'].Line(point1=(0.5*self.edge, -0.5*sqrt(3)*self.edge),
+                    point2=(-0.5*self.edge, 0.5*sqrt(3)*self.edge))
+                mdb.models['Model-1'].sketches['__profile__'].Line(point1=(-0.5*self.edge, -0.5*sqrt(3)*self.edge),
+                    point2=(0.5*self.edge, 0.5*sqrt(3)*self.edge))
+                mdb.models['Model-1'].parts['Hex-'+str(j+((k-1)%2)*2)+'-'+str(i)].PartitionFaceBySketch(faces=
+                    mdb.models['Model-1'].parts['Hex-'+str(j+((k-1)%2)*2)+'-'+str(i)].faces[0:1],
+                    sketch=mdb.models['Model-1'].sketches['__profile__'])
+                del mdb.models['Model-1'].sketches['__profile__']
         # Gera as partes hexagonais do honeycomb da aresta inferior
         for i in range(4,2*self.nc,4):
             mdb.models['Model-1'].ConstrainedSketch(name='__profile__', sheetSize=200.0)
@@ -90,6 +112,20 @@ class Honeycomb:
             mdb.models['Model-1'].parts['Hex-'+str(0)+'-'+str(i)].BaseShell(sketch=
                 mdb.models['Model-1'].sketches['__profile__'])
             del mdb.models['Model-1'].sketches['__profile__']
+            # Particoes
+            mdb.models['Model-1'].ConstrainedSketch(gridSpacing=0.13, name='__profile__',
+                sheetSize=5.29, transform=
+            mdb.models['Model-1'].parts['Hex-'+str(0)+'-'+str(i)].MakeSketchTransform(
+                sketchPlane=mdb.models['Model-1'].parts['Hex-'+str(0)+'-'+str(i)].faces[0],
+                sketchPlaneSide=SIDE1, sketchOrientation=RIGHT, origin=(-0.5*self.edge, 0.5*sqrt(3)*self.edge, 0.0)))
+            mdb.models['Model-1'].parts['Hex-'+str(0)+'-'+str(i)].projectReferencesOntoSketch(filter=
+                COPLANAR_EDGES, sketch=mdb.models['Model-1'].sketches['__profile__'])
+            mdb.models['Model-1'].sketches['__profile__'].Line(point1=(self.edge, 0), point2=(0.5*self.edge, 0.5*sqrt(3)*self.edge))
+            mdb.models['Model-1'].sketches['__profile__'].Line(point1=(self.edge, 0), point2=(1.5*self.edge, 0.5*sqrt(3)*self.edge))
+            mdb.models['Model-1'].parts['Hex-'+str(0)+'-'+str(i)].PartitionFaceBySketch(faces=
+                mdb.models['Model-1'].parts['Hex-'+str(0)+'-'+str(i)].faces[0:1],
+                sketch=mdb.models['Model-1'].sketches['__profile__'])
+            del mdb.models['Model-1'].sketches['__profile__']
         # Gera as partes hexagonais do honeycomb da aresta superior
         for i in range(2,2*self.nc,4):
             mdb.models['Model-1'].ConstrainedSketch(name='__profile__', sheetSize=200.0)
@@ -105,6 +141,20 @@ class Honeycomb:
                 DEFORMABLE_BODY)
             mdb.models['Model-1'].parts['Hex-'+str(4*self.nr+2)+'-'+str(i)].BaseShell(sketch=
                 mdb.models['Model-1'].sketches['__profile__'])
+            del mdb.models['Model-1'].sketches['__profile__']
+            # Particoes
+            mdb.models['Model-1'].ConstrainedSketch(gridSpacing=0.13, name='__profile__',
+                sheetSize=5.29, transform=
+            mdb.models['Model-1'].parts['Hex-'+str(4*self.nr+2)+'-'+str(i)].MakeSketchTransform(
+                sketchPlane=mdb.models['Model-1'].parts['Hex-'+str(4*self.nr+2)+'-'+str(i)].faces[0],
+                sketchPlaneSide=SIDE1, sketchOrientation=RIGHT, origin=(0.0, 0.0, 0.0)))
+            mdb.models['Model-1'].parts['Hex-'+str(4*self.nr+2)+'-'+str(i)].projectReferencesOntoSketch(filter=
+                COPLANAR_EDGES, sketch=mdb.models['Model-1'].sketches['__profile__'])
+            mdb.models['Model-1'].sketches['__profile__'].Line(point1=(0, 0), point2=(0.5*self.edge, 0.5*sqrt(3)*self.edge))
+            mdb.models['Model-1'].sketches['__profile__'].Line(point1=(self.edge, 0), point2=(0.5*self.edge, 0.5*sqrt(3)*self.edge))
+            mdb.models['Model-1'].parts['Hex-'+str(4*self.nr+2)+'-'+str(i)].PartitionFaceBySketch(faces=
+                mdb.models['Model-1'].parts['Hex-'+str(4*self.nr+2)+'-'+str(i)].faces[0:1],
+                sketch=mdb.models['Model-1'].sketches['__profile__'])
             del mdb.models['Model-1'].sketches['__profile__']
         # Gera as partes hexagonais do honeycomb do lado esquerdo
         for j in range(4,4*(self.nr+1),4):
@@ -124,6 +174,21 @@ class Honeycomb:
             mdb.models['Model-1'].parts['Hex-'+str(j)+'-'+str(0)].BaseShell(sketch=
                 mdb.models['Model-1'].sketches['__profile__'])
             del mdb.models['Model-1'].sketches['__profile__']
+            # Particoes
+            mdb.models['Model-1'].ConstrainedSketch(gridSpacing=0.13, name='__profile__',
+                sheetSize=5.29, transform=
+            mdb.models['Model-1'].parts['Hex-'+str(j)+'-'+str(0)].MakeSketchTransform(
+                sketchPlane=mdb.models['Model-1'].parts['Hex-'+str(j)+'-'+str(0)].faces[0],
+                sketchPlaneSide=SIDE1, sketchOrientation=RIGHT, origin=(0.5*self.edge, 0.0, 0.0)))
+            mdb.models['Model-1'].parts['Hex-'+str(j)+'-'+str(0)].projectReferencesOntoSketch(filter=
+                COPLANAR_EDGES, sketch=mdb.models['Model-1'].sketches['__profile__'])
+            mdb.models['Model-1'].sketches['__profile__'].Line(point1=(0, 0.5*sqrt(3)*self.edge), point2=(0.5*self.edge, sqrt(3)*self.edge))
+            mdb.models['Model-1'].sketches['__profile__'].Line(point1=(0, 0.5*sqrt(3)*self.edge), point2=(self.edge, 0.5*sqrt(3)*self.edge))
+            mdb.models['Model-1'].sketches['__profile__'].Line(point1=(0, 0.5*sqrt(3)*self.edge), point2=(0.5*self.edge, 0.0))
+            mdb.models['Model-1'].parts['Hex-'+str(j)+'-'+str(0)].PartitionFaceBySketch(faces=
+                mdb.models['Model-1'].parts['Hex-'+str(j)+'-'+str(0)].faces[0:1],
+                sketch=mdb.models['Model-1'].sketches['__profile__'])
+            del mdb.models['Model-1'].sketches['__profile__']
         # Gera as partes hexagonais do honeycomb do lado direito
         for j in range(2,4*(self.nr),4):
             mdb.models['Model-1'].ConstrainedSketch(name='__profile__', sheetSize=200.0)
@@ -142,6 +207,21 @@ class Honeycomb:
             mdb.models['Model-1'].parts['Hex-'+str(j+((self.nc-1)%2)*2)+'-'+str(2*self.nc)].BaseShell(sketch=
                 mdb.models['Model-1'].sketches['__profile__'])
             del mdb.models['Model-1'].sketches['__profile__']
+            # Particoes
+            mdb.models['Model-1'].ConstrainedSketch(gridSpacing=0.13, name='__profile__',
+                sheetSize=5.29, transform=
+            mdb.models['Model-1'].parts['Hex-'+str(j+((self.nc-1)%2)*2)+'-'+str(2*self.nc)].MakeSketchTransform(
+                sketchPlane=mdb.models['Model-1'].parts['Hex-'+str(j+((self.nc-1)%2)*2)+'-'+str(2*self.nc)].faces[0],
+                sketchPlaneSide=SIDE1, sketchOrientation=RIGHT, origin=(0.0, 0.0, 0.0)))
+            mdb.models['Model-1'].parts['Hex-'+str(j+((self.nc-1)%2)*2)+'-'+str(2*self.nc)].projectReferencesOntoSketch(filter=
+                COPLANAR_EDGES, sketch=mdb.models['Model-1'].sketches['__profile__'])
+            mdb.models['Model-1'].sketches['__profile__'].Line(point1=(0.5*self.edge, 0.5*sqrt(3)*self.edge), point2=(0.0, 0.0))
+            mdb.models['Model-1'].sketches['__profile__'].Line(point1=(0.5*self.edge, 0.5*sqrt(3)*self.edge), point2=(-0.5*self.edge, 0.5*sqrt(3)*self.edge))
+            mdb.models['Model-1'].sketches['__profile__'].Line(point1=(0.5*self.edge, 0.5*sqrt(3)*self.edge), point2=(0.0, sqrt(3)*self.edge))
+            mdb.models['Model-1'].parts['Hex-'+str(j+((self.nc-1)%2)*2)+'-'+str(2*self.nc)].PartitionFaceBySketch(faces=
+                mdb.models['Model-1'].parts['Hex-'+str(j+((self.nc-1)%2)*2)+'-'+str(2*self.nc)].faces[0:1],
+                sketch=mdb.models['Model-1'].sketches['__profile__'])
+            del mdb.models['Model-1'].sketches['__profile__']
         # Gera as partes hexagonais do honeycomb dos vertices
         mdb.models['Model-1'].ConstrainedSketch(name='__profile__', sheetSize=200.0)
         mdb.models['Model-1'].sketches['__profile__'].Line(point1=(0.0, 0.0),
@@ -156,6 +236,18 @@ class Honeycomb:
             DEFORMABLE_BODY)
         mdb.models['Model-1'].parts['Hex-'+str(0)+'-'+str(0)].BaseShell(sketch=
             mdb.models['Model-1'].sketches['__profile__'])
+        del mdb.models['Model-1'].sketches['__profile__']
+        mdb.models['Model-1'].ConstrainedSketch(gridSpacing=0.13, name='__profile__',
+            sheetSize=5.29, transform=
+        mdb.models['Model-1'].parts['Hex-0-0'].MakeSketchTransform(
+            sketchPlane=mdb.models['Model-1'].parts['Hex-0-0'].faces[0],
+            sketchPlaneSide=SIDE1, sketchOrientation=RIGHT, origin=(0.0, 0.0, 0.0)))
+        mdb.models['Model-1'].parts['Hex-0-0'].projectReferencesOntoSketch(filter=
+            COPLANAR_EDGES, sketch=mdb.models['Model-1'].sketches['__profile__'])
+        mdb.models['Model-1'].sketches['__profile__'].Line(point1=(0.0, 0.0), point2=(0.5*self.edge, 0.5*sqrt(3)*self.edge))
+        mdb.models['Model-1'].parts['Hex-0-0'].PartitionFaceBySketch(faces=
+            mdb.models['Model-1'].parts['Hex-0-0'].faces[0:1],
+            sketch=mdb.models['Model-1'].sketches['__profile__'])
         del mdb.models['Model-1'].sketches['__profile__']
         if (self.nc % 2) == 1:
             mdb.models['Model-1'].ConstrainedSketch(name='__profile__', sheetSize=200.0)
@@ -172,6 +264,18 @@ class Honeycomb:
             mdb.models['Model-1'].parts['Hex-'+str(4*self.nr+2)+'-'+str(2*self.nc)].BaseShell(sketch=
                 mdb.models['Model-1'].sketches['__profile__'])
             del mdb.models['Model-1'].sketches['__profile__']
+            mdb.models['Model-1'].ConstrainedSketch(gridSpacing=0.13, name='__profile__',
+                sheetSize=5.29, transform=
+            mdb.models['Model-1'].parts['Hex-'+str(4*self.nr+2)+'-'+str(2*self.nc)].MakeSketchTransform(
+                sketchPlane=mdb.models['Model-1'].parts['Hex-'+str(4*self.nr+2)+'-'+str(2*self.nc)].faces[0],
+                sketchPlaneSide=SIDE1, sketchOrientation=RIGHT, origin=(0.0, 0.0, 0.0)))
+            mdb.models['Model-1'].parts['Hex-'+str(4*self.nr+2)+'-'+str(2*self.nc)].projectReferencesOntoSketch(filter=
+                COPLANAR_EDGES, sketch=mdb.models['Model-1'].sketches['__profile__'])
+            mdb.models['Model-1'].sketches['__profile__'].Line(point1=(0.0, 0.0), point2=(0.5*self.edge, 0.5*sqrt(3)*self.edge))
+            mdb.models['Model-1'].parts['Hex-'+str(4*self.nr+2)+'-'+str(2*self.nc)].PartitionFaceBySketch(faces=
+                mdb.models['Model-1'].parts['Hex-'+str(4*self.nr+2)+'-'+ str(2*self.nc)].faces[0:1],
+                sketch=mdb.models['Model-1'].sketches['__profile__'])
+            del mdb.models['Model-1'].sketches['__profile__']
         else:
             mdb.models['Model-1'].ConstrainedSketch(name='__profile__', sheetSize=200.0)
             mdb.models['Model-1'].sketches['__profile__'].Line(point1=(0.0, 0.0),
@@ -186,6 +290,17 @@ class Honeycomb:
                 DEFORMABLE_BODY)
             mdb.models['Model-1'].parts['Hex-'+str(0)+'-'+str(2*self.nc)].BaseShell(sketch=
                 mdb.models['Model-1'].sketches['__profile__'])
+            mdb.models['Model-1'].ConstrainedSketch(gridSpacing=0.13, name='__profile__',
+                sheetSize=5.29, transform=
+            mdb.models['Model-1'].parts['Hex-0-'+str(2*self.nc)].MakeSketchTransform(
+                sketchPlane=mdb.models['Model-1'].parts['Hex-0-'+str(2*self.nc)].faces[0],
+                sketchPlaneSide=SIDE1, sketchOrientation=RIGHT, origin=(0.0, 0.0, 0.0)))
+            mdb.models['Model-1'].parts['Hex-0-'+str(2*self.nc)].projectReferencesOntoSketch(filter=
+                COPLANAR_EDGES, sketch=mdb.models['Model-1'].sketches['__profile__'])
+            mdb.models['Model-1'].sketches['__profile__'].Line(point1=(self.edge, 0.0), point2=(0.5*self.edge, 0.5*sqrt(3)*self.edge))
+            mdb.models['Model-1'].parts['Hex-0-'+str(2*self.nc)].PartitionFaceBySketch(faces=
+                mdb.models['Model-1'].parts['Hex-0-'+str(2*self.nc)].faces[0:1],
+                sketch=mdb.models['Model-1'].sketches['__profile__'])
             del mdb.models['Model-1'].sketches['__profile__']
     def generateCohesives(self):
         # Elementos coesivos: gera os elementos coesivos
@@ -443,35 +558,35 @@ class Honeycomb:
                         'Instance-Cohesive-000-'+str(index+2)+'-'+str(i)].edges[0:1])
                     , thickness=ON, tieRotations=ON)
                 mdb.models['Model-1'].Tie(adjust=ON, master=Region(
-                    side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(index)+'-'+str(i)].edges[5:6])
+                    side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(index)+'-'+str(i)].edges[11:12])
                     , name='Hex-'+str(index)+'-'+str(i)+'-Coe-'+str(index+1)+'-'+str(i-1), 
                     positionToleranceMethod=COMPUTED, slave=Region(
                     side1Edges=mdb.models['Model-1'].rootAssembly.instances[
                         'Instance-Cohesive-060-'+str(index+1)+'-'+str(i-1)].edges[1:2])
                     , thickness=ON, tieRotations=ON)
                 mdb.models['Model-1'].Tie(adjust=ON, master=Region(
-                    side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(index)+'-'+str(i)].edges[0:1])
+                    side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(index)+'-'+str(i)].edges[5:6])
                     , name='Hex-'+str(index)+'-'+str(i)+'-Coe-'+str(index-1)+'-'+str(i-1), 
                     positionToleranceMethod=COMPUTED, slave=Region(
                     side1Edges=mdb.models['Model-1'].rootAssembly.instances[
                         'Instance-Cohesive-120-'+str(index-1)+'-'+str(i-1)].edges[3:4])
                     , thickness=ON, tieRotations=ON)
                 mdb.models['Model-1'].Tie(adjust=ON, master=Region(
-                    side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(index)+'-'+str(i)].edges[1:2])
+                    side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(index)+'-'+str(i)].edges[10:11])
                     , name='Hex-'+str(index)+'-'+str(i)+'-Coe-'+str(index-2)+'-'+str(i),
                     positionToleranceMethod=COMPUTED, slave=Region(
                     side1Edges=mdb.models['Model-1'].rootAssembly.instances[
                         'Instance-Cohesive-000-'+str(index-2)+'-'+str(i)].edges[2:3])
                     , thickness=ON, tieRotations=ON)
                 mdb.models['Model-1'].Tie(adjust=ON, master=Region(
-                    side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(index)+'-'+str(i)].edges[2:3])
+                    side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(index)+'-'+str(i)].edges[1:2])
                     , name='Hex-'+str(index)+'-'+str(i)+'-Coe-'+str(index-1)+'-'+str(i+1), 
                     positionToleranceMethod=COMPUTED, slave=Region(
                     side1Edges=mdb.models['Model-1'].rootAssembly.instances[
-                        'Instance-Cohesive-060-'+str(index-1)+'-'+str(i+1)].edges[3:4])
+                        'Instance-Cohesive-060-'+str(index-1)+'-'+str(i+1)].edges[5:6])
                     , thickness=ON, tieRotations=ON)
                 mdb.models['Model-1'].Tie(adjust=ON, master=Region(
-                    side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(index)+'-'+str(i)].edges[3:4])
+                    side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(index)+'-'+str(i)].edges[8:9])
                     , name='Hex-'+str(j)+'-'+str(i)+'-Coe-'+str(j+1)+'-'+str(i+1), 
                     positionToleranceMethod=COMPUTED, slave=Region(
                     side1Edges=mdb.models['Model-1'].rootAssembly.instances[
@@ -480,13 +595,13 @@ class Honeycomb:
         # Interacoes da aresta inferior
         for i in range(4,2*self.nc,4):
             mdb.models['Model-1'].Tie(adjust=ON, master=Region(
-                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-0-'+str(i)].edges[0:1])
+                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-0-'+str(i)].edges[5:6])
                 , name='Hex-'+str(0)+'-'+str(i)+'-Coe-1'+'-'+str(i-1),
                 positionToleranceMethod=COMPUTED, slave=Region(
                 side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-Cohesive-060-1-'+str(i-1)].edges[1:2])
                 , thickness=ON, tieRotations=ON)
             mdb.models['Model-1'].Tie(adjust=ON, master=Region(
-                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-0-'+str(i)].edges[3:4])
+                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-0-'+str(i)].edges[4:5])
                 , name='Hex-'+str(0)+'-'+str(i)+'-Coe-2'+'-'+str(i), 
                 positionToleranceMethod=COMPUTED, slave=Region(
                 side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-Cohesive-000-2-'+str(i)].edges[0:1])
@@ -500,19 +615,19 @@ class Honeycomb:
         # Interacoes da aresta superior
         for i in range(2,2*self.nc,4):
             mdb.models['Model-1'].Tie(adjust=ON, master=Region(
-                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(4*self.nr+2)+'-'+str(i)].edges[2:3])
+                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(4*self.nr+2)+'-'+str(i)].edges[5:6])
                 , name='Hex-'+str(4*self.nr+2)+'-'+str(i)+'-Coe-'+str(4*self.nr+1)+'-'+str(i+1), 
                 positionToleranceMethod=COMPUTED, slave=Region(
                 side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-Cohesive-060-'+str(4*self.nr+1)+'-'+str(i+1)].edges[3:4])
                 , thickness=ON, tieRotations=ON)
             mdb.models['Model-1'].Tie(adjust=ON, master=Region(
-                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(4*self.nr+2)+'-'+str(i)].edges[1:2])
+                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(4*self.nr+2)+'-'+str(i)].edges[6:7])
                 , name='Hex-'+str(4*self.nr+2)+'-'+str(i)+'-Coe-'+str(4*self.nr)+'-'+str(i), 
                 positionToleranceMethod=COMPUTED, slave=Region(
                 side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-Cohesive-000-'+str(4*self.nr)+'-'+str(i)].edges[2:3])
                 , thickness=ON, tieRotations=ON)
             mdb.models['Model-1'].Tie(adjust=ON, master=Region(
-                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(4*self.nr+2)+'-'+str(i)].edges[0:1])
+                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(4*self.nr+2)+'-'+str(i)].edges[1:2])
                 , name='Hex-'+str(4*self.nr+1)+'-'+str(i-1)+'-Coe-'+str(4*self.nr-1)+'-'+str(i-1), 
                 positionToleranceMethod=COMPUTED, slave=Region(
                 side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-Cohesive-120-'+str(4*self.nr+1)+'-'+str(i-1)].edges[3:4])
@@ -521,25 +636,25 @@ class Honeycomb:
         for j in range(2,4*(self.nr),4):
             index=j+((self.nc+1)%2)*2
             mdb.models['Model-1'].Tie(adjust=ON, master=Region(
-                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(index)+'-'+str(2*self.nc)].edges[1:2])
+                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(index)+'-'+str(2*self.nc)].edges[4:5])
                 , name='Hex-'+str(index)+'-'+str(2*self.nc)+'-Coe-'+str(index-2)+'-'+str(2*self.nc),
                 positionToleranceMethod=COMPUTED, slave=Region(
                 side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-Cohesive-000-'+str(index-2)+'-'+str(2*self.nc)].edges[2:3])
                 , thickness=ON, tieRotations=ON)
             mdb.models['Model-1'].Tie(adjust=ON, master=Region(
-                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(index)+'-'+str(2*self.nc)].edges[0:1])
+                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(index)+'-'+str(2*self.nc)].edges[8:9])
                 , name='Hex-'+str(index)+'-'+str(2*self.nc)+'-Coe-'+str(index-1)+'-'+str(2*self.nc-1), 
                 positionToleranceMethod=COMPUTED, slave=Region(
                 side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-Cohesive-120-'+str(index-1)+'-'+str(2*self.nc-1)].edges[3:4])
                 , thickness=ON, tieRotations=ON)
             mdb.models['Model-1'].Tie(adjust=ON, master=Region(
-                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(index)+'-'+str(2*self.nc)].edges[4:5])
+                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(index)+'-'+str(2*self.nc)].edges[7:8])
                 , name='Hex-'+str(index)+'-'+str(2*self.nc)+'-Coe-'+str(index+1)+'-'+str(2*self.nc-1), 
                 positionToleranceMethod=COMPUTED, slave=Region(
                 side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-Cohesive-060-'+str(index+1)+'-'+str(2*self.nc-1)].edges[1:2])
                 , thickness=ON, tieRotations=ON)
             mdb.models['Model-1'].Tie(adjust=ON, master=Region(
-                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(index)+'-'+str(2*self.nc)].edges[3:4])
+                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(index)+'-'+str(2*self.nc)].edges[2:3])
                 , name='Hex-'+str(index)+'-'+str(2*self.nc)+'-Coe-'+str(index+2)+'-'+str(2*self.nc), 
                 positionToleranceMethod=COMPUTED, slave=Region(
                 side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-Cohesive-000-'+str(index+2)+'-'+str(2*self.nc)].edges[0:1])
@@ -553,19 +668,19 @@ class Honeycomb:
                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-Cohesive-000-'+str(j+2)+'-0'].edges[0:1])
                , thickness=ON, tieRotations=ON)
            mdb.models['Model-1'].Tie(adjust=ON, master=Region(
-               side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(j)+'-0'].edges[3:4])
+               side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(j)+'-0'].edges[8:9])
                , name='Hex-'+str(j)+'-'+str(0)+'-Coe-'+str(j+1)+'-1',
                positionToleranceMethod=COMPUTED, slave=Region(
                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-Cohesive-120-'+str(j+1)+'-1'].edges[1:2])
                , thickness=ON, tieRotations=ON)
            mdb.models['Model-1'].Tie(adjust=ON, master=Region(
-               side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(j)+'-0'].edges[2:3])
+               side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(j)+'-0'].edges[7:8])
                , name='Hex-'+str(j)+'-'+str(0)+'-Coe-'+str(j-1)+'-1',
                positionToleranceMethod=COMPUTED, slave=Region(
                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-Cohesive-060-'+str(j-1)+'-1'].edges[3:4])
                , thickness=ON, tieRotations=ON)
            mdb.models['Model-1'].Tie(adjust=ON, master=Region(
-               side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(j)+'-0'].edges[1:2])
+               side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(j)+'-0'].edges[2:3])
                , name='Hex-'+str(j)+'-'+str(0)+'-Coe-'+str(j-2)+'-0',
                positionToleranceMethod=COMPUTED, slave=Region(
                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-Cohesive-000-'+str(j-2)+'-0'].edges[2:3])
@@ -590,14 +705,14 @@ class Honeycomb:
                 side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-Cohesive-000-'+str(4*self.nr)+'-'+str(2*self.nc)].edges[2:3])
                             , thickness=ON, tieRotations=ON)
             mdb.models['Model-1'].Tie(adjust=ON, master=Region(
-                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(4*self.nr+2)+'-'+str(2*self.nc)].edges[0:1])
+                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(4*self.nr+2)+'-'+str(2*self.nc)].edges[4:5])
                 , name='Hex-'+str(4*self.nr+2)+'-'+str(2*self.nc)+'-Coe-'+str(4*self.nr+1)+'-'+str(2*self.nc-1), 
                 positionToleranceMethod=COMPUTED, slave=Region(
                 side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-Cohesive-120-'+str(4*self.nr+1)+'-'+str(2*self.nc-1)].edges[3:4])
                 , thickness=ON, tieRotations=ON)
         else:
             mdb.models['Model-1'].Tie(adjust=ON, master=Region(
-                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(0)+'-'+str(2*self.nc)].edges[0:1]) #Acertar arestas
+                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(0)+'-'+str(2*self.nc)].edges[2:3]) #Acertar arestas
                 , name='Hex-'+str(0)+'-'+str(2*self.nc)+'-Coe-'+str(1)+'-'+str(2*self.nc-1), 
                 positionToleranceMethod=COMPUTED, slave=Region(
                     side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-Cohesive-000-'+str(2)+'-'+str(2*self.nc)].edges[1:2])

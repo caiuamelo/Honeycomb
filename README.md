@@ -21,4 +21,4 @@ A fazer:
 -- Criar material elastico - traction
 -- Criar dano por traction sparation
 
--> Criar partitions no hexagono para a malha (Caiuã)
+-> Criar partitions no hexagono para a malha (Caiuã) (Feito!)
