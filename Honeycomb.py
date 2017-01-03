@@ -728,5 +728,75 @@ class Honeycomb:
         pass
     def setCohesveProperty(self):
         pass
-
+    def generateMesh(self,seed=0.1):
+        # Gera malha para hex do centro
+        for j in range(2,4*self.nr,4):
+            k=0
+            for i in range(2,2*self.nc,2):
+                k = k+1
+                mdb.models['Model-1'].parts['Hex-'+str(j+((k-1)%2)*2)+'-'+str(i)].seedPart(deviationFactor=0.1,  minSizeFactor=0.1, size=seed)
+                mdb.models['Model-1'].parts['Hex-'+str(j+((k-1)%2)*2)+'-'+str(i)].setMeshControls(regions=
+                    mdb.models['Model-1'].parts['Hex-'+str(j+((k-1)%2)*2)+'-'+str(i)].faces[:], technique=STRUCTURED)
+                mdb.models['Model-1'].parts['Hex-'+str(j+((k-1)%2)*2)+'-'+str(i)].generateMesh()
+        # aresta inferior
+        for i in range(4,2*self.nc,4):
+            mdb.models['Model-1'].parts['Hex-0-'+str(i)].seedPart(deviationFactor=0.1,  minSizeFactor=0.1, size=seed)
+            mdb.models['Model-1'].parts['Hex-0-'+str(i)].setMeshControls(regions=
+                mdb.models['Model-1'].parts['Hex-0-'+str(i)].faces[:], technique=STRUCTURED)
+            mdb.models['Model-1'].parts['Hex-0-'+str(i)].generateMesh()
+        # aresta superior
+        for i in range(2,2*self.nc,4):
+            mdb.models['Model-1'].parts['Hex-'+str(4*self.nr+2)+'-'+str(i)].seedPart(deviationFactor=0.1,  minSizeFactor=0.1, size=seed)
+            mdb.models['Model-1'].parts['Hex-'+str(4*self.nr+2)+'-'+str(i)].setMeshControls(regions=
+                mdb.models['Model-1'].parts['Hex-'+str(4*self.nr+2)+'-'+str(i)].faces[:], technique=STRUCTURED)
+            mdb.models['Model-1'].parts['Hex-'+str(4*self.nr+2)+'-'+str(i)].generateMesh()
+        # lado esquerdo
+        for j in range(4,4*(self.nr+1),4):
+            mdb.models['Model-1'].parts['Hex-'+str(j)+'-'+str(0)].seedPart(deviationFactor=0.1,  minSizeFactor=0.1, size=seed)
+            mdb.models['Model-1'].parts['Hex-'+str(j)+'-'+str(0)].setMeshControls(regions=
+                mdb.models['Model-1'].parts['Hex-'+str(j)+'-'+str(0)].faces[:], technique=STRUCTURED)
+            mdb.models['Model-1'].parts['Hex-'+str(j)+'-'+str(0)].generateMesh()
+        # lado direito
+        for j in range(2,4*(self.nr),4): 
+            mdb.models['Model-1'].parts['Hex-'+str(j+((self.nc-1)%2)*2)+'-'+str(2*self.nc)].seedPart(deviationFactor=0.1,  minSizeFactor=0.1, size=seed)
+            mdb.models['Model-1'].parts['Hex-'+str(j+((self.nc-1)%2)*2)+'-'+str(2*self.nc)].setMeshControls(regions=
+                mdb.models['Model-1'].parts['Hex-'+str(j+((self.nc-1)%2)*2)+'-'+str(2*self.nc)].faces[:], technique=STRUCTURED)
+            mdb.models['Model-1'].parts['Hex-'+str(j+((self.nc-1)%2)*2)+'-'+str(2*self.nc)].generateMesh()
+        # Canto inferior esquerdo
+        mdb.models['Model-1'].parts['Hex-0-0'].seedPart(deviationFactor=0.1,  minSizeFactor=0.1, size=seed)
+        mdb.models['Model-1'].parts['Hex-0-0'].setMeshControls(regions=
+            mdb.models['Model-1'].parts['Hex-0-0'].faces[:], technique=STRUCTURED)
+        mdb.models['Model-1'].parts['Hex-0-0'].generateMesh()
+        # Canto direito
+        if (self.nc % 2) == 1:
+            mdb.models['Model-1'].parts['Hex-'+str(4*self.nr+2)+'-'+ str(2*self.nc)].seedPart(deviationFactor=0.1,  minSizeFactor=0.1, size=seed)
+            mdb.models['Model-1'].parts['Hex-'+str(4*self.nr+2)+'-'+ str(2*self.nc)].setMeshControls(regions=
+                mdb.models['Model-1'].parts['Hex-'+str(4*self.nr+2)+'-'+ str(2*self.nc)].faces[:], technique=STRUCTURED)
+            mdb.models['Model-1'].parts['Hex-'+str(4*self.nr+2)+'-'+ str(2*self.nc)].generateMesh()
+        else:
+            mdb.models['Model-1'].parts['Hex-0-'+ str(2*self.nc)].seedPart(deviationFactor=0.1,  minSizeFactor=0.1, size=seed)
+            mdb.models['Model-1'].parts['Hex-0-'+ str(2*self.nc)].setMeshControls(regions=
+                mdb.models['Model-1'].parts['Hex-0-'+ str(2*self.nc)].faces[:], technique=STRUCTURED)
+            mdb.models['Model-1'].parts['Hex-0-'+ str(2*self.nc)].generateMesh()
+        # Malha nos coesivos
+        # Coesivo 0
+        mdb.models['Model-1'].parts['Cohesive000'].seedPart(deviationFactor=0.1,  minSizeFactor=0.1, size=seed)
+        mdb.models['Model-1'].parts['Cohesive000'].setMeshControls(regions=
+            mdb.models['Model-1'].parts['Cohesive000'].faces[:], technique=STRUCTURED)
+        mdb.models['Model-1'].parts['Cohesive000'].generateMesh()
+        # Coesivo 0 metade
+        mdb.models['Model-1'].parts['Cohesive000h'].seedPart(deviationFactor=0.1,  minSizeFactor=0.1, size=seed)
+        mdb.models['Model-1'].parts['Cohesive000h'].setMeshControls(regions=
+            mdb.models['Model-1'].parts['Cohesive000h'].faces[:], technique=STRUCTURED)
+        mdb.models['Model-1'].parts['Cohesive000h'].generateMesh()
+        # Coesivo 60
+        mdb.models['Model-1'].parts['Cohesive060'].seedPart(deviationFactor=0.1,  minSizeFactor=0.1, size=seed)
+        mdb.models['Model-1'].parts['Cohesive060'].setMeshControls(regions=
+            mdb.models['Model-1'].parts['Cohesive060'].faces[:], technique=STRUCTURED)
+        mdb.models['Model-1'].parts['Cohesive060'].generateMesh()
+        # Coesivo 120
+        mdb.models['Model-1'].parts['Cohesive120'].seedPart(deviationFactor=0.1,  minSizeFactor=0.1, size=seed)
+        mdb.models['Model-1'].parts['Cohesive120'].setMeshControls(regions=
+            mdb.models['Model-1'].parts['Cohesive120'].faces[:], technique=STRUCTURED)
+        mdb.models['Model-1'].parts['Cohesive120'].generateMesh()
 
