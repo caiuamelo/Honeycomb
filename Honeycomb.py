@@ -1,7 +1,6 @@
 # Funcao: Automatiza a criacao de um honeycomb com gaps preenchidos por elementos coesivos
 # Autores: Caiua e Bruno
 # Data de criacao: 2/12/2016
-# Data de modificacao: 12/12/2016
  
 # Para executar no abaqus?
 ## Carrega a classe
@@ -583,7 +582,7 @@ class Honeycomb:
                     , name='Hex-'+str(index)+'-'+str(i)+'-Coe-'+str(index-1)+'-'+str(i+1), 
                     positionToleranceMethod=COMPUTED, slave=Region(
                     side1Edges=mdb.models['Model-1'].rootAssembly.instances[
-                        'Instance-Cohesive-060-'+str(index-1)+'-'+str(i+1)].edges[5:6])
+                        'Instance-Cohesive-060-'+str(index-1)+'-'+str(i+1)].edges[3:4])
                     , thickness=ON, tieRotations=ON)
                 mdb.models['Model-1'].Tie(adjust=ON, master=Region(
                     side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(index)+'-'+str(i)].edges[8:9])
