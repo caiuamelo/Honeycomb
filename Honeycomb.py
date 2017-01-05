@@ -714,13 +714,13 @@ class Honeycomb:
                 side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(0)+'-'+str(2*self.nc)].edges[2:3]) #Acertar arestas
                 , name='Hex-'+str(0)+'-'+str(2*self.nc)+'-Coe-'+str(1)+'-'+str(2*self.nc-1), 
                 positionToleranceMethod=COMPUTED, slave=Region(
-                    side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-Cohesive-000-'+str(2)+'-'+str(2*self.nc)].edges[1:2])
+                    side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-Cohesive-000-'+str(2)+'-'+str(2*self.nc)].edges[0:1])
                 , thickness=ON, tieRotations=ON)
             mdb.models['Model-1'].Tie(adjust=ON, master=Region(
                 side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-'+str(0)+'-'+str(2*self.nc)].edges[3:4])
                 , name='Hex-'+str(0)+'-'+str(2*self.nc-1)+'-Coe-'+str(2)+'-'+str(2*self.nc), 
                 positionToleranceMethod=COMPUTED, slave=Region(
-                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-Cohesive-060-'+str(1)+'-'+str(2*self.nc-1)].edges[0:1])
+                side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-Cohesive-060-'+str(1)+'-'+str(2*self.nc-1)].edges[1:2])
                 , thickness=ON, tieRotations=ON)
 
     def setHexsProperty(self):
