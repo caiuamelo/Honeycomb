@@ -30,6 +30,7 @@ from job import *
 from sketch import *
 from visualization import *
 from connectorBehavior import *
+import numpy
 
 class Honeycomb:
     # Atributos
@@ -722,11 +723,51 @@ class Honeycomb:
                 positionToleranceMethod=COMPUTED, slave=Region(
                 side1Edges=mdb.models['Model-1'].rootAssembly.instances['Instance-Cohesive-060-'+str(1)+'-'+str(2*self.nc-1)].edges[1:2])
                 , thickness=ON, tieRotations=ON)
-
+    # Propriedades dos hexagonos
     def setHexsProperty(self):
-        pass
-    def setCohesveProperty(self):
-        pass
+        distrib = numpy.loadtxt('distrib.txt')
+        mdb.models['Model-1'].Material(name='Material-Hex')
+        mdb.models['Model-1'].materials['Material-Hex'].Elastic(table=((148000.0,
+            127000.0, 148000.0, 0.34, 0.34, 0.34, 47000.0, 47000.0, 47000.0), ), type=
+            ENGINEERING_CONSTANTS)
+        mdb.models['Model-1'].materials['Material-Hex'].Expansion(table=((3.87e-06,
+            -1.2e-06, 3.87e-06), ), type=ORTHOTROPIC)
+        mdb.models['Model-1'].HomogeneousSolidSection(material='Material-Hex', name=
+                    'Section-Hex', thickness=None)
+        i=0
+        for key in mdb.models['Model-1'].parts.keys():
+            if 'Hex' in key:
+                mdb.models['Model-1'].parts[key].MaterialOrientation(
+                    additionalRotationField='', additionalRotationType=ROTATION_ANGLE, angle=
+                    distrib[i], axis=AXIS_3, fieldName='', localCsys=None, orientationType=SYSTEM,
+                    region=Region(faces=mdb.models['Model-1'].parts[key].faces[:]), stackDirection=STACK_3)
+                mdb.models['Model-1'].parts[key].SectionAssignment(offset=0.0,
+                    offsetField='', offsetType=MIDDLE_SURFACE, region=Region(
+                    faces=mdb.models['Model-1'].parts[key].faces[:]), sectionName=
+                    'Section-Hex', thicknessAssignment=FROM_SECTION)
+                i+=1
+    # Propriedades dos coesivos
+    def setCohesiveProperty(self):
+        mdb.models['Model-1'].Material(name='Material-Cohesive')
+        mdb.models['Model-1'].materials['Material-Cohesive'].Elastic(table=((740000000.0,
+            335000000.0, 335000000.0), ), type=TRACTION)
+        mdb.models['Model-1'].materials['Material-Cohesive'].MaxsDamageInitiation(table=((
+            700.0, 700.0, 700.0), ))
+        mdb.models['Model-1'].materials['Material-Cohesive'].maxsDamageInitiation.DamageEvolution(
+            table=((0.000543, ), ), type=ENERGY)
+        mdb.models['Model-1'].HomogeneousSolidSection(material='Material-Cohesive', name=
+            'Section-Cohesive', thickness=None)
+        cohesives = ['000','000h','060','120']
+        for cohesive in cohesives:
+            mdb.models['Model-1'].parts['Cohesive'+cohesive].MaterialOrientation(
+                additionalRotationField='', additionalRotationType=ROTATION_ANGLE, angle=
+                float(cohesive[0:2]), axis=AXIS_3, fieldName='', localCsys=None, orientationType=SYSTEM,
+                region=Region(faces=mdb.models['Model-1'].parts['Cohesive'+cohesive].faces[:]), stackDirection=STACK_3)
+            mdb.models['Model-1'].parts['Cohesive'+cohesive].SectionAssignment(offset=0.0,
+                offsetField='', offsetType=MIDDLE_SURFACE, region=Region(
+                faces=mdb.models['Model-1'].parts['Cohesive'+cohesive].faces[:]), sectionName=
+                'Section-Cohesive', thicknessAssignment=FROM_SECTION)
+    # Gera a malha       
     def generateMesh(self,seed=0.1):
         # Gera malha para hex do centro
         for j in range(2,4*self.nr,4):
@@ -779,23 +820,39 @@ class Honeycomb:
             mdb.models['Model-1'].parts['Hex-0-'+ str(2*self.nc)].generateMesh()
         # Malha nos coesivos
         # Coesivo 0
-        mdb.models['Model-1'].parts['Cohesive000'].seedPart(deviationFactor=0.1,  minSizeFactor=0.1, size=seed)
+        mdb.models['Model-1'].parts['Cohesive000'].seedPart(deviationFactor=0.1,  minSizeFactor=0.1, size=0.5*seed)
         mdb.models['Model-1'].parts['Cohesive000'].setMeshControls(regions=
-            mdb.models['Model-1'].parts['Cohesive000'].faces[:], technique=STRUCTURED)
+            mdb.models['Model-1'].parts['Cohesive000'].faces[:], technique=STRUCTURED, elemShape=QUAD)
         mdb.models['Model-1'].parts['Cohesive000'].generateMesh()
+        mdb.models['Model-1'].parts['Cohesive000'].setElementType(elemTypes=(ElemType(
+            elemCode=COH2D4, elemLibrary=STANDARD, elemDeletion=ON, viscosity=0.002),
+            ElemType(elemCode=UNKNOWN_TRI, elemLibrary=STANDARD)), regions=(
+                mdb.models['Model-1'].parts['Cohesive000'].faces[:], ))
         # Coesivo 0 metade
-        mdb.models['Model-1'].parts['Cohesive000h'].seedPart(deviationFactor=0.1,  minSizeFactor=0.1, size=seed)
+        mdb.models['Model-1'].parts['Cohesive000h'].seedPart(deviationFactor=0.1,  minSizeFactor=0.1, size=0.5*seed)
         mdb.models['Model-1'].parts['Cohesive000h'].setMeshControls(regions=
-            mdb.models['Model-1'].parts['Cohesive000h'].faces[:], technique=STRUCTURED)
+            mdb.models['Model-1'].parts['Cohesive000h'].faces[:], technique=STRUCTURED, elemShape=QUAD)
         mdb.models['Model-1'].parts['Cohesive000h'].generateMesh()
+        mdb.models['Model-1'].parts['Cohesive000h'].setElementType(elemTypes=(ElemType(
+            elemCode=COH2D4, elemLibrary=STANDARD, elemDeletion=ON, viscosity=0.002),
+            ElemType(elemCode=UNKNOWN_TRI, elemLibrary=STANDARD)), regions=(
+                mdb.models['Model-1'].parts['Cohesive000h'].faces[:], ))
         # Coesivo 60
-        mdb.models['Model-1'].parts['Cohesive060'].seedPart(deviationFactor=0.1,  minSizeFactor=0.1, size=seed)
+        mdb.models['Model-1'].parts['Cohesive060'].seedPart(deviationFactor=0.1,  minSizeFactor=0.1, size=0.5*seed)
         mdb.models['Model-1'].parts['Cohesive060'].setMeshControls(regions=
-            mdb.models['Model-1'].parts['Cohesive060'].faces[:], technique=STRUCTURED)
+            mdb.models['Model-1'].parts['Cohesive060'].faces[:], technique=STRUCTURED, elemShape=QUAD)
         mdb.models['Model-1'].parts['Cohesive060'].generateMesh()
+        mdb.models['Model-1'].parts['Cohesive060'].setElementType(elemTypes=(ElemType(
+            elemCode=COH2D4, elemLibrary=STANDARD, elemDeletion=ON, viscosity=0.002),
+            ElemType(elemCode=UNKNOWN_TRI, elemLibrary=STANDARD)), regions=(
+                mdb.models['Model-1'].parts['Cohesive060'].faces[:], ))
         # Coesivo 120
-        mdb.models['Model-1'].parts['Cohesive120'].seedPart(deviationFactor=0.1,  minSizeFactor=0.1, size=seed)
+        mdb.models['Model-1'].parts['Cohesive120'].seedPart(deviationFactor=0.1,  minSizeFactor=0.1, size=0.5*seed)
         mdb.models['Model-1'].parts['Cohesive120'].setMeshControls(regions=
-            mdb.models['Model-1'].parts['Cohesive120'].faces[:], technique=STRUCTURED)
+                mdb.models['Model-1'].parts['Cohesive120'].faces[:], technique=STRUCTURED, elemShape=QUAD)
         mdb.models['Model-1'].parts['Cohesive120'].generateMesh()
-
+        mdb.models['Model-1'].parts['Cohesive120'].setElementType(elemTypes=(ElemType(
+            elemCode=COH2D4, elemLibrary=STANDARD, elemDeletion=ON, viscosity=0.002),
+            ElemType(elemCode=UNKNOWN_TRI, elemLibrary=STANDARD)), regions=(
+                mdb.models['Model-1'].parts['Cohesive120'].faces[:], ))
+ 
