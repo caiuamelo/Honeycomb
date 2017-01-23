@@ -1,22 +1,23 @@
-# Funcao: Automatiza a criacao de um honeycomb com gaps preenchidos por elementos coesivos
-# Autores: Caiua e Bruno
-# Data de criacao: 2/12/2016
+"""
+Funcao: Automatiza a criacao de um honeycomb com gaps preenchidos por elementos coesivos
+ Autores: Caiua e Bruno
+ Data de criacao: 2/12/2016
  
-# Para executar no abaqus?
-## Carrega a classe
-# H = Honeycomb()
-## Seta o tamanho da aresta do hexagono
-# H.setEdgeSize(1)
-## Tamanho do gap
-# H.setGapSize(0.05)
-## Numero de colunas  
-# H.setNumberColumns(7)
-## Numero de linhas
-# H.setNumberRows(6)
-# H.generateHexs()
-# H.generateCohesives()
-# H.generateAssembly()
-
+ Para executar no abaqus?
+ Carrega a classe
+  H = Honeycomb()
+ Seta o tamanho da aresta do hexagono
+  H.setEdgeSize(1)
+ Tamanho do gap
+  H.setGapSize(0.05)
+ Numero de colunas  
+  H.setNumberColumns(7)
+ Numero de linhas
+  H.setNumberRows(6)
+  H.generateHexs()
+  H.generateCohesives()
+  H.generateAssembly()
+"""
 # -*- coding: mbcs -*-
 from material import *
 from section import *
@@ -755,104 +756,37 @@ class Honeycomb:
             700.0, 700.0, 700.0), ))
         mdb.models['Model-1'].materials['Material-Cohesive'].maxsDamageInitiation.DamageEvolution(
             table=((0.000543, ), ), type=ENERGY)
-        mdb.models['Model-1'].HomogeneousSolidSection(material='Material-Cohesive', name=
-            'Section-Cohesive', thickness=None)
+        mdb.models['Model-1'].CohesiveSection(material='Material-Cohesive', name=
+                    'Section-Cohesive', outOfPlaneThickness=None, response=TRACTION_SEPARATION)
         cohesives = ['000','000h','060','120']
         for cohesive in cohesives:
             mdb.models['Model-1'].parts['Cohesive'+cohesive].MaterialOrientation(
                 additionalRotationField='', additionalRotationType=ROTATION_ANGLE, angle=
-                float(cohesive[0:2]), axis=AXIS_3, fieldName='', localCsys=None, orientationType=SYSTEM,
+                float(cohesive[0:3]), axis=AXIS_3, fieldName='', localCsys=None, orientationType=SYSTEM,
                 region=Region(faces=mdb.models['Model-1'].parts['Cohesive'+cohesive].faces[:]), stackDirection=STACK_3)
             mdb.models['Model-1'].parts['Cohesive'+cohesive].SectionAssignment(offset=0.0,
                 offsetField='', offsetType=MIDDLE_SURFACE, region=Region(
                 faces=mdb.models['Model-1'].parts['Cohesive'+cohesive].faces[:]), sectionName=
                 'Section-Cohesive', thicknessAssignment=FROM_SECTION)
     # Gera a malha       
-    def generateMesh(self,seed=0.1):
-        # Gera malha para hex do centro
-        for j in range(2,4*self.nr,4):
-            k=0
-            for i in range(2,2*self.nc,2):
-                k = k+1
-                mdb.models['Model-1'].parts['Hex-'+str(j+((k-1)%2)*2)+'-'+str(i)].seedPart(deviationFactor=0.1,  minSizeFactor=0.1, size=seed)
-                mdb.models['Model-1'].parts['Hex-'+str(j+((k-1)%2)*2)+'-'+str(i)].setMeshControls(regions=
-                    mdb.models['Model-1'].parts['Hex-'+str(j+((k-1)%2)*2)+'-'+str(i)].faces[:], technique=STRUCTURED)
-                mdb.models['Model-1'].parts['Hex-'+str(j+((k-1)%2)*2)+'-'+str(i)].generateMesh()
-        # aresta inferior
-        for i in range(4,2*self.nc,4):
-            mdb.models['Model-1'].parts['Hex-0-'+str(i)].seedPart(deviationFactor=0.1,  minSizeFactor=0.1, size=seed)
-            mdb.models['Model-1'].parts['Hex-0-'+str(i)].setMeshControls(regions=
-                mdb.models['Model-1'].parts['Hex-0-'+str(i)].faces[:], technique=STRUCTURED)
-            mdb.models['Model-1'].parts['Hex-0-'+str(i)].generateMesh()
-        # aresta superior
-        for i in range(2,2*self.nc,4):
-            mdb.models['Model-1'].parts['Hex-'+str(4*self.nr+2)+'-'+str(i)].seedPart(deviationFactor=0.1,  minSizeFactor=0.1, size=seed)
-            mdb.models['Model-1'].parts['Hex-'+str(4*self.nr+2)+'-'+str(i)].setMeshControls(regions=
-                mdb.models['Model-1'].parts['Hex-'+str(4*self.nr+2)+'-'+str(i)].faces[:], technique=STRUCTURED)
-            mdb.models['Model-1'].parts['Hex-'+str(4*self.nr+2)+'-'+str(i)].generateMesh()
-        # lado esquerdo
-        for j in range(4,4*(self.nr+1),4):
-            mdb.models['Model-1'].parts['Hex-'+str(j)+'-'+str(0)].seedPart(deviationFactor=0.1,  minSizeFactor=0.1, size=seed)
-            mdb.models['Model-1'].parts['Hex-'+str(j)+'-'+str(0)].setMeshControls(regions=
-                mdb.models['Model-1'].parts['Hex-'+str(j)+'-'+str(0)].faces[:], technique=STRUCTURED)
-            mdb.models['Model-1'].parts['Hex-'+str(j)+'-'+str(0)].generateMesh()
-        # lado direito
-        for j in range(2,4*(self.nr),4): 
-            mdb.models['Model-1'].parts['Hex-'+str(j+((self.nc-1)%2)*2)+'-'+str(2*self.nc)].seedPart(deviationFactor=0.1,  minSizeFactor=0.1, size=seed)
-            mdb.models['Model-1'].parts['Hex-'+str(j+((self.nc-1)%2)*2)+'-'+str(2*self.nc)].setMeshControls(regions=
-                mdb.models['Model-1'].parts['Hex-'+str(j+((self.nc-1)%2)*2)+'-'+str(2*self.nc)].faces[:], technique=STRUCTURED)
-            mdb.models['Model-1'].parts['Hex-'+str(j+((self.nc-1)%2)*2)+'-'+str(2*self.nc)].generateMesh()
-        # Canto inferior esquerdo
-        mdb.models['Model-1'].parts['Hex-0-0'].seedPart(deviationFactor=0.1,  minSizeFactor=0.1, size=seed)
-        mdb.models['Model-1'].parts['Hex-0-0'].setMeshControls(regions=
-            mdb.models['Model-1'].parts['Hex-0-0'].faces[:], technique=STRUCTURED)
-        mdb.models['Model-1'].parts['Hex-0-0'].generateMesh()
-        # Canto direito
-        if (self.nc % 2) == 1:
-            mdb.models['Model-1'].parts['Hex-'+str(4*self.nr+2)+'-'+ str(2*self.nc)].seedPart(deviationFactor=0.1,  minSizeFactor=0.1, size=seed)
-            mdb.models['Model-1'].parts['Hex-'+str(4*self.nr+2)+'-'+ str(2*self.nc)].setMeshControls(regions=
-                mdb.models['Model-1'].parts['Hex-'+str(4*self.nr+2)+'-'+ str(2*self.nc)].faces[:], technique=STRUCTURED)
-            mdb.models['Model-1'].parts['Hex-'+str(4*self.nr+2)+'-'+ str(2*self.nc)].generateMesh()
-        else:
-            mdb.models['Model-1'].parts['Hex-0-'+ str(2*self.nc)].seedPart(deviationFactor=0.1,  minSizeFactor=0.1, size=seed)
-            mdb.models['Model-1'].parts['Hex-0-'+ str(2*self.nc)].setMeshControls(regions=
-                mdb.models['Model-1'].parts['Hex-0-'+ str(2*self.nc)].faces[:], technique=STRUCTURED)
-            mdb.models['Model-1'].parts['Hex-0-'+ str(2*self.nc)].generateMesh()
-        # Malha nos coesivos
-        # Coesivo 0
-        mdb.models['Model-1'].parts['Cohesive000'].seedPart(deviationFactor=0.1,  minSizeFactor=0.1, size=0.5*seed)
-        mdb.models['Model-1'].parts['Cohesive000'].setMeshControls(regions=
-            mdb.models['Model-1'].parts['Cohesive000'].faces[:], technique=STRUCTURED, elemShape=QUAD)
-        mdb.models['Model-1'].parts['Cohesive000'].generateMesh()
-        mdb.models['Model-1'].parts['Cohesive000'].setElementType(elemTypes=(ElemType(
-            elemCode=COH2D4, elemLibrary=STANDARD, elemDeletion=ON, viscosity=0.002),
-            ElemType(elemCode=UNKNOWN_TRI, elemLibrary=STANDARD)), regions=(
-                mdb.models['Model-1'].parts['Cohesive000'].faces[:], ))
-        # Coesivo 0 metade
-        mdb.models['Model-1'].parts['Cohesive000h'].seedPart(deviationFactor=0.1,  minSizeFactor=0.1, size=0.5*seed)
-        mdb.models['Model-1'].parts['Cohesive000h'].setMeshControls(regions=
-            mdb.models['Model-1'].parts['Cohesive000h'].faces[:], technique=STRUCTURED, elemShape=QUAD)
-        mdb.models['Model-1'].parts['Cohesive000h'].generateMesh()
-        mdb.models['Model-1'].parts['Cohesive000h'].setElementType(elemTypes=(ElemType(
-            elemCode=COH2D4, elemLibrary=STANDARD, elemDeletion=ON, viscosity=0.002),
-            ElemType(elemCode=UNKNOWN_TRI, elemLibrary=STANDARD)), regions=(
-                mdb.models['Model-1'].parts['Cohesive000h'].faces[:], ))
-        # Coesivo 60
-        mdb.models['Model-1'].parts['Cohesive060'].seedPart(deviationFactor=0.1,  minSizeFactor=0.1, size=0.5*seed)
-        mdb.models['Model-1'].parts['Cohesive060'].setMeshControls(regions=
-            mdb.models['Model-1'].parts['Cohesive060'].faces[:], technique=STRUCTURED, elemShape=QUAD)
-        mdb.models['Model-1'].parts['Cohesive060'].generateMesh()
-        mdb.models['Model-1'].parts['Cohesive060'].setElementType(elemTypes=(ElemType(
-            elemCode=COH2D4, elemLibrary=STANDARD, elemDeletion=ON, viscosity=0.002),
-            ElemType(elemCode=UNKNOWN_TRI, elemLibrary=STANDARD)), regions=(
-                mdb.models['Model-1'].parts['Cohesive060'].faces[:], ))
-        # Coesivo 120
-        mdb.models['Model-1'].parts['Cohesive120'].seedPart(deviationFactor=0.1,  minSizeFactor=0.1, size=0.5*seed)
-        mdb.models['Model-1'].parts['Cohesive120'].setMeshControls(regions=
-                mdb.models['Model-1'].parts['Cohesive120'].faces[:], technique=STRUCTURED, elemShape=QUAD)
-        mdb.models['Model-1'].parts['Cohesive120'].generateMesh()
-        mdb.models['Model-1'].parts['Cohesive120'].setElementType(elemTypes=(ElemType(
-            elemCode=COH2D4, elemLibrary=STANDARD, elemDeletion=ON, viscosity=0.002),
-            ElemType(elemCode=UNKNOWN_TRI, elemLibrary=STANDARD)), regions=(
-                mdb.models['Model-1'].parts['Cohesive120'].faces[:], ))
- 
+    def generateMesh(self, seed=0.1):
+        for key in mdb.models['Model-1'].parts.keys():
+            if 'Hex' in key:
+                mdb.models['Model-1'].parts[key].seedPart(deviationFactor=0.1,  minSizeFactor=0.1, size=seed)
+                mdb.models['Model-1'].parts[key].setMeshControls(regions=
+                    mdb.models['Model-1'].parts[key].faces[:], technique=STRUCTURED)
+                mdb.models['Model-1'].parts[key].generateMesh()
+                mdb.models['Model-1'].parts[key].setElementType(elemTypes=(ElemType(
+                    elemCode=CPS4I, elemLibrary=STANDARD),
+                    ElemType(elemCode=CPS3, elemLibrary=STANDARD)), regions=(
+                    mdb.models['Model-1'].parts[key].faces[:], ))
+            else:
+                mdb.models['Model-1'].parts[key].seedPart(deviationFactor=0.1,  minSizeFactor=0.1, size=0.5*seed)
+                mdb.models['Model-1'].parts[key].setMeshControls(regions=
+                    mdb.models['Model-1'].parts[key].faces[:], technique=STRUCTURED, elemShape=QUAD)
+                mdb.models['Model-1'].parts[key].generateMesh()
+                mdb.models['Model-1'].parts[key].setElementType(elemTypes=(ElemType(
+                    elemCode=COH2D4, elemLibrary=STANDARD, elemDeletion=ON, viscosity=0.002),
+                    ElemType(elemCode=UNKNOWN_TRI, elemLibrary=STANDARD)), regions=(
+                    mdb.models['Model-1'].parts[key].faces[:], ))
+
