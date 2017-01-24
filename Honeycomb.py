@@ -84,8 +84,8 @@ class Honeycomb:
                     0.0)))
                 mdb.models['Model-1'].parts['Hex-'+str(j+((k-1)%2)*2)+'-'+str(i)].projectReferencesOntoSketch(filter=
                     COPLANAR_EDGES, sketch=mdb.models['Model-1'].sketches['__profile__'])
-                mdb.models['Model-1'].sketches['__profile__'].Line(point1=(-1.0,
-                    4.03784438551824e-07), point2=(1.0, 4.03784438551824e-07))
+                mdb.models['Model-1'].sketches['__profile__'].Line(point1=(-1.0*self.edge,
+                    0), point2=(1.0*self.edge, 0))
                 mdb.models['Model-1'].sketches['__profile__'].HorizontalConstraint(
                     addUndoState=False, entity=
                     mdb.models['Model-1'].sketches['__profile__'].geometry[8])
@@ -160,7 +160,7 @@ class Honeycomb:
         # Gera as partes hexagonais do honeycomb do lado esquerdo
         for j in range(4,4*(self.nr+1),4):
             mdb.models['Model-1'].ConstrainedSketch(name='__profile__', sheetSize=200.0)
-            mdb.models['Model-1'].sketches['__profile__'].Line(point1=(0.5, 0.0),
+            mdb.models['Model-1'].sketches['__profile__'].Line(point1=(0.5*self.edge, 0.0),
                 point2=(1.0*self.edge, 0.0))
             mdb.models['Model-1'].sketches['__profile__'].Line(point1=(1.0*self.edge, 0.0),
                 point2=(1.5*self.edge, (sqrt(3)/2)*self.edge))
@@ -385,7 +385,7 @@ class Honeycomb:
                         'Instance-Cohesive-060-'+str(j+1+((k-1)%2)*2)+'-'+str(i-1), 
                         'Instance-Cohesive-120-'+str(j-1+((k-1)%2)*2)+'-'+str(i-1)), 
                         vector=(((1.5*(self.edge)+(sqrt(3)/2)*self.gap))*(k-1), 
-                            ((k-1) % 2)*((sqrt(3)/2)*self.edge+0.5*self.gap) + (l-1)*(self.edge)*(sqrt(3)+self.gap) , 0.0))
+                            ((k-1) % 2)*((sqrt(3)/2)*self.edge+0.5*self.gap) + (l-1)*(self.edge*sqrt(3)+self.gap) , 0.0))
         # Monta elementos da aresta inferior
         k=-1
         for i in range(4,2*self.nc,4):
@@ -479,14 +479,14 @@ class Honeycomb:
             mdb.models['Model-1'].rootAssembly.Instance(dependent=ON,
                 name='Instance-Cohesive-120-'+str(j-1+((self.nc-1)%2)*2)+'-'+str(2*self.nc-1), 
                 part=mdb.models['Model-1'].parts['Cohesive120'])
-            # posiciona as 4 partes (tres coesivos e dois hexagonos)
+            # posiciona as 4 partes (tres coesivos e hexagono)
             mdb.models['Model-1'].rootAssembly.translate(instanceList=
                 ('Instance-'+str(j+((self.nc-1)%2)*2)+'-'+str(2*self.nc),
                 'Instance-Cohesive-000-'+str(j+2+((self.nc-1)%2)*2)+'-'+str(2*self.nc),
                 'Instance-Cohesive-060-'+str(j+1+((self.nc-1)%2)*2)+'-'+str(2*self.nc-1),
                 'Instance-Cohesive-120-'+str(j-1+((self.nc-1)%2)*2)+'-'+str(2*self.nc-1)), 
                  vector=(((1.5*(self.edge)+(sqrt(3)/2)*self.gap))*(self.nc-1), 
-                    ((self.nc-1) % 2)*((sqrt(3)/2)*self.edge+0.5*self.gap) + (l-1)*(self.edge)*(sqrt(3)+self.gap) , 0.0))
+                    ((self.nc-1) % 2)*((sqrt(3)/2)*self.edge+0.5*self.gap) + (l-1)*(self.edge*sqrt(3)+self.gap) , 0.0))
         ## Coloca coesivo no canto inferior direito
         # Coesivo 0 graus (metade)
         if (self.nc % 2) == 1: 
